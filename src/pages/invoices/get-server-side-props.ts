@@ -1,3 +1,4 @@
+import { InvoiceEntry, isInvoiceEntry } from "@/types/invoices";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -8,20 +9,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
+    const { data } = await response.json();
+
+    const invoices: InvoiceEntry[] = data.map((o: unknown) => {
+      if (!isInvoiceEntry(o)) {
+        throw new Error("Invalid invoice entry");
+      }
+
+      return {
+        ...o,
+        progress: Math.round(o.progress * 100), // Convert to percentage
+      };
+    });
 
     return {
       props: {
-        invoices: data,
+        invoices,
       },
     };
   } catch (err) {
-    console.error("Failed to fetch items:", err);
+    return {
+      redirect: {
+        destination: "/error",
+        permanent: false,
+      },
+    };
   }
-
-  return {
-    props: {
-      invoices: [],
-    },
-  };
 };

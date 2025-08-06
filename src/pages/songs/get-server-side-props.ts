@@ -1,3 +1,4 @@
+import { DashboardEntry, isDashboardEntry } from "@/types/songs";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -8,20 +9,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
+    const { data: result } = await response.json();
+
+    const data: DashboardEntry[] = result.map((o: unknown) => {
+      if (!isDashboardEntry(o)) {
+        throw new Error("Invalid dashboard entry");
+      }
+      return o;
+    });
 
     return {
       props: {
-        digested: data,
+        data,
       },
     };
   } catch (err) {
-    console.error("Failed to fetch items:", err);
+    return {
+      redirect: {
+        destination: "/error",
+        permanent: false,
+      },
+    };
   }
-
-  return {
-    props: {
-      digested: [],
-    },
-  };
 };

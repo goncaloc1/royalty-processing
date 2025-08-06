@@ -1,10 +1,10 @@
-import { Digested } from "../api/songs";
+import { DashboardEntry } from "@/types/songs";
 
 type SongsPageProps = {
-  digested: Digested[];
+  data: DashboardEntry[];
 };
 
-export default function Home({ digested }: SongsPageProps) {
+export default function Home({ data }: SongsPageProps) {
   return (
     <div className="w-[70%]">
       <div className="grid grid-cols-[1fr_4fr_3fr_2fr_3fr_2fr_3fr] gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-t-lg font-semibold text-sm text-gray-700 dark:text-gray-300">
@@ -18,7 +18,7 @@ export default function Home({ digested }: SongsPageProps) {
       </div>
 
       <div className="border border-gray-200 dark:border-gray-700 rounded-b-lg">
-        {digested.map((row) => (
+        {data.map((row) => (
           <div
             key={row.id}
             className="grid grid-cols-[1fr_4fr_3fr_2fr_3fr_2fr_3fr] gap-4 p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"

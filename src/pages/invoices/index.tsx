@@ -1,7 +1,7 @@
-import { InvoiceData } from "../../repository/types";
+import { InvoiceEntry } from "@/types/invoices";
 
 interface InvoicesProps {
-  invoices: InvoiceData[];
+  invoices: InvoiceEntry[];
 }
 
 export default function Invoices({ invoices }: InvoicesProps) {

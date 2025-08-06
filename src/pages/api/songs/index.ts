@@ -1,43 +1,24 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { dbQueries } from "@/repository/queries";
 import { seedDatabase } from "@/repository/seed";
-
-export type Digested = {
-  id: number;
-  song: string;
-  author: string;
-  progress: number | null;
-  lastClickDate: string | null;
-  lastClickProgress: number | null;
-};
+import { Response } from "../types";
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Digested[]>
+  res: NextApiResponse<Response>
 ) {
   if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" } as any);
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     // Seed database on first run
     seedDatabase();
 
-    // Get dashboard data from database
-    const results = dbQueries.getDashboard.all() as any[];
+    const data = dbQueries.getDashboard.all();
 
-    const digested: Digested[] = results.map((row) => ({
-      id: row.id,
-      song: row.song,
-      author: row.author,
-      progress: row.progress,
-      lastClickDate: row.lastClickDate,
-      lastClickProgress: row.lastClickProgress,
-    }));
-
-    res.status(200).json(digested);
+    res.status(200).json({ data });
   } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({ message: "Internal server error" } as any);
+    res.status(500).json({ error: "Internal server error" });
   }
 }

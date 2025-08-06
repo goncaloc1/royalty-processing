@@ -20,22 +20,18 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   const router = useRouter();
 
-  // Determine active tab based on current route
-  const getActiveTab = (): "songs" | "invoices" => {
-    if (router.pathname === "/invoices") {
-      return "invoices";
-    }
-    if (router.pathname === "/songs") {
-      return "songs";
-    }
-    return "songs"; // default fallback
-  };
+  // Determine active tab based on current route - songs is the default page
+  const getActiveTab = (): "songs" | "invoices" =>
+    router.pathname === "/invoices" ? "invoices" : "songs";
+
+  // check if we should hide navigation (for error page)
+  const shouldHideNavigation = router.pathname === "/error";
 
   return (
     <div
       className={`${geistSans.className} ${geistMono.className} font-sans min-h-screen flex flex-col`}
     >
-      <Navigation activeTab={getActiveTab()} />
+      {!shouldHideNavigation && <Navigation activeTab={getActiveTab()} />}
       <main className="flex-1 flex items-center justify-center px-8">
         {children}
       </main>
