@@ -1,51 +1,16 @@
-import { DashboardEntry } from "@/types/songs";
-import { useState } from "react";
+import { useSongs } from "@/hooks/useSongs";
 
-type SongsPageProps = {
-  data: DashboardEntry[];
-};
+export default function Home() {
+  const { data, error, isMutating, mutate } = useSongs();
 
-export default function Home({ data }: SongsPageProps) {
-  const [isGenerating, setIsGenerating] = useState<number | null>(null);
+  if (error) {
+    return <div>Error... {error.message}</div>;
+  }
 
-  const handleIssueInvoice = async (row: DashboardEntry) => {
-    setIsGenerating(row.id);
+  if (data == null) {
+    return <div>loading</div>;
+  }
 
-    try {
-      // Get current date in YYYY-MM-DD format
-      const currentDate = new Date().toISOString().split("T")[0];
-
-      const payload = {
-        date: currentDate,
-        author: row.author,
-        songName: row.song,
-        progress: row.progress,
-      };
-
-      const response = await fetch("/api/invoices", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create invoice");
-      }
-
-      const result = await response.json();
-      console.log(`Invoice created successfully! ID: ${result.data.id}`);
-
-      // Refresh the page to update the "Last Click" data
-      window.location.reload();
-    } catch (error) {
-      console.error("Error creating invoice:", error);
-      alert("Failed to create invoice. Please try again.");
-    } finally {
-      setIsGenerating(null);
-    }
-  };
   return (
     <div className="w-[70%]">
       <div className="grid grid-cols-[1fr_4fr_3fr_2fr_3fr_2fr_3fr] gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-t-lg font-semibold text-sm text-gray-700 dark:text-gray-300">
@@ -88,9 +53,11 @@ export default function Home({ data }: SongsPageProps) {
             </div>
             <div className="flex items-center border-l border-gray-300 dark:border-gray-600 pl-4 ml-2">
               <button
-                onClick={() => handleIssueInvoice(row)}
+                onClick={() => {
+                  mutate(row);
+                }}
                 disabled={
-                  isGenerating === row.id ||
+                  isMutating === row.id ||
                   !row.progress ||
                   row.progress === 0 ||
                   row.progress === row.lastClickProgress
@@ -113,4 +80,4 @@ export default function Home({ data }: SongsPageProps) {
   );
 }
 
-export { getServerSideProps } from "./get-server-side-props";
+export { getStaticProps } from "../../ssr/songs/get-server-side-props";
