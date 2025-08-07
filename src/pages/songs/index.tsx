@@ -1,10 +1,51 @@
 import { DashboardEntry } from "@/types/songs";
+import { useState } from "react";
 
 type SongsPageProps = {
   data: DashboardEntry[];
 };
 
 export default function Home({ data }: SongsPageProps) {
+  const [isGenerating, setIsGenerating] = useState<number | null>(null);
+
+  const handleIssueInvoice = async (row: DashboardEntry) => {
+    setIsGenerating(row.id);
+
+    try {
+      // Get current date in YYYY-MM-DD format
+      const currentDate = new Date().toISOString().split("T")[0];
+
+      const payload = {
+        date: currentDate,
+        author: row.author,
+        songName: row.song,
+        progress: row.progress,
+      };
+
+      const response = await fetch("/api/invoices", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create invoice");
+      }
+
+      const result = await response.json();
+      console.log(`Invoice created successfully! ID: ${result.data.id}`);
+
+      // Refresh the page to update the "Last Click" data
+      window.location.reload();
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      alert("Failed to create invoice. Please try again.");
+    } finally {
+      setIsGenerating(null);
+    }
+  };
   return (
     <div className="w-[70%]">
       <div className="grid grid-cols-[1fr_4fr_3fr_2fr_3fr_2fr_3fr] gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-t-lg font-semibold text-sm text-gray-700 dark:text-gray-300">
@@ -46,7 +87,16 @@ export default function Home({ data }: SongsPageProps) {
               )}
             </div>
             <div className="flex items-center border-l border-gray-300 dark:border-gray-600 pl-4 ml-2">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors">
+              <button
+                onClick={() => handleIssueInvoice(row)}
+                disabled={
+                  isGenerating === row.id ||
+                  !row.progress ||
+                  row.progress === 0 ||
+                  row.progress === row.lastClickProgress
+                }
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-200 disabled:cursor-not-allowed text-white px-3 py-1 rounded text-xs font-medium transition-colors"
+              >
                 Issue Invoice
               </button>
             </div>
