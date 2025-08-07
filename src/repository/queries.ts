@@ -4,6 +4,9 @@ import db from "./database";
 export const dbQueries = {
   // Song
   getAllSongs: db.prepare("SELECT id, song, author FROM song ORDER BY id"),
+  getSongGuid: db.prepare(
+    "SELECT guid FROM song WHERE song = ? AND author = ?"
+  ),
   insertSong: db.prepare(
     "INSERT INTO song (guid, id, song, author) VALUES (?, ?, ?, ?)"
   ),
