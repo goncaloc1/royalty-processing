@@ -1,4 +1,4 @@
-import { useInvoices } from "@/hooks/useInvoices";
+import { useInvoices } from "@/hooks/use-invoices";
 import { Invoices } from "@/components/invoices";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { useRouter } from "next/router";

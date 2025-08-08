@@ -1,5 +1,5 @@
 import { Songs } from "@/components/songs";
-import { useSongs } from "@/hooks/useSongs";
+import { useSongs } from "@/hooks/use-songs";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { useRouter } from "next/router";
 import { useEffect } from "react";

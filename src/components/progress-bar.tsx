@@ -15,10 +15,14 @@ export function ProgressBar({
 
   return (
     <>
-      <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+      <div
+        className="w-full bg-gray-200 rounded-full h-2 mr-2"
+        data-testid="progress-bar-container"
+      >
         <div
           className="bg-blue-500 h-2 rounded-full"
           style={{ width: percentage + "%" }}
+          data-testid="progress-bar-fill"
         ></div>
       </div>
       {showPercentage && (
