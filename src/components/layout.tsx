@@ -24,16 +24,16 @@ export default function Layout({ children }: LayoutProps) {
   const getActiveTab = (): "songs" | "invoices" =>
     router.pathname === "/invoices" ? "invoices" : "songs";
 
-  // check if we should hide navigation (for error page)
-  const shouldHideNavigation = router.pathname === "/error";
+  // Hide navigation for error page
+  const hideNavigation = router.pathname === "/error";
 
   return (
     <div
       className={`${geistSans.className} ${geistMono.className} font-sans min-h-screen flex flex-col`}
     >
-      {!shouldHideNavigation && <Navigation activeTab={getActiveTab()} />}
+      {!hideNavigation && <Navigation activeTab={getActiveTab()} />}
       <main className="flex-1 flex items-center justify-center px-8">
-        {children}
+        <div className="w-[70%]">{children}</div>
       </main>
     </div>
   );

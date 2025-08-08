@@ -1,22 +1,22 @@
 import { useInvoices } from "@/hooks/useInvoices";
 import { Invoices } from "@/components/invoices";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function InvoicesPage() {
+  const router = useRouter();
   const { error, data } = useInvoices();
 
-  if (error) {
-    return <div>Error...</div>;
-  }
+  useEffect(() => {
+    if (error) {
+      router.push("/error");
+    }
+  }, [error, router]);
 
   if (data == null) {
-    return <div>loading</div>;
+    return <LoadingSkeleton columns={5} />;
   }
 
-  return (
-    <div className="w-[70%]">
-      <Invoices data={data} />
-    </div>
-  );
+  return <Invoices data={data} />;
 }
-
-export { getStaticProps } from "../../ssr/invoices/get-server-side-props";
