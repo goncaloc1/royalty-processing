@@ -3,8 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 const fetchSongs = async (): Promise<{ data: DashboardEntry[] }> => {
+  console.log("🔄 Fetching songs data...");
   const response = await fetch("/api/songs");
-  return await response.json();
+  const result = await response.json();
+  console.log("✅ Songs data fetched:", result);
+  return result;
 };
 
 const issueInvoice = async (payload: unknown) => {

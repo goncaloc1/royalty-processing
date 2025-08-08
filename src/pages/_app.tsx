@@ -10,8 +10,9 @@ export default function App({ Component, pageProps }: AppProps) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Set reasonable staleTime for client-side caching
-            staleTime: 120 * 1000,
+            // If a user leaves the app, returns and the query data is stale,
+            // it automatically requests fresh data in the background.
+            refetchOnWindowFocus: true,
           },
         },
       })
