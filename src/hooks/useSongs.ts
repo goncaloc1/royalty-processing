@@ -42,7 +42,7 @@ export const useSongs = () => {
 
   const mutation = useMutation({
     mutationFn: async (row: DashboardEntry) => {
-      setIsMutating(row.id);
+      setMutatingId(row.id);
 
       const payload = buildPayload(row);
       const result = await issueInvoice(payload);
@@ -75,16 +75,16 @@ export const useSongs = () => {
       queryClient.invalidateQueries({ queryKey: ["songs"] });
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
 
-      setIsMutating(null);
+      setMutatingId(null);
     },
   });
 
-  const [isMutating, setIsMutating] = useState<number | null>(null);
+  const [mutatingId, setMutatingId] = useState<number | null>(null);
 
   return {
     data: songs?.data,
     error,
     mutate: mutation.mutate,
-    isMutating,
+    mutatingId,
   } as const;
 };

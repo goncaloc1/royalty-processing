@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
-import Navigation from "./navigation";
+import { Navigation } from "./navigation";
 import { useRouter } from "next/router";
 
 const geistSans = Geist({
