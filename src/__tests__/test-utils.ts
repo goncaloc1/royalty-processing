@@ -1,8 +1,8 @@
-import { DashboardEntry } from "../types/songs";
+import { SongEntry } from "../types/songs";
 import { InvoiceEntry } from "../types/invoices";
 
 // Mock data
-export const mockSongData: DashboardEntry[] = [
+export const mockSongData: SongEntry[] = [
   {
     id: 1,
     song: "Test Song 1",

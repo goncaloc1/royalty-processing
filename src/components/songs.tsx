@@ -1,9 +1,9 @@
-import { DashboardEntry } from "@/types/songs";
+import { SongEntry } from "@/types/songs";
 import { ProgressBar } from "./progress-bar";
 
 type SongsProps = {
-  data: DashboardEntry[];
-  onIssueInvoice: (row: DashboardEntry) => void;
+  data: SongEntry[];
+  onIssueInvoice: (row: SongEntry) => void;
   mutatingId: number | null;
 };
 
@@ -12,7 +12,7 @@ export function Songs({
   onIssueInvoice: handleClick,
   mutatingId,
 }: SongsProps) {
-  const isButtonDisabled = (row: DashboardEntry) =>
+  const isButtonDisabled = (row: SongEntry) =>
     mutatingId === row.id ||
     row?.progress === 0 ||
     row?.progress === row.lastClickProgress;

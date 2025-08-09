@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { Songs } from "../songs";
 import { mockSongData } from "../../__tests__/test-utils";
-import { DashboardEntry } from "../../types/songs";
+import { SongEntry } from "../../types/songs";
 
 // Mock the ProgressBar component since it's already tested separately
 jest.mock("../progress-bar", () => ({
@@ -16,7 +16,7 @@ jest.mock("../progress-bar", () => ({
 describe("Songs", () => {
   const mockOnIssueInvoice = jest.fn();
 
-  const mockData: DashboardEntry[] = [
+  const mockData: SongEntry[] = [
     ...mockSongData,
     {
       id: 3,
@@ -161,7 +161,7 @@ describe("Songs", () => {
   });
 
   it("disables button when progress equals lastClickProgress", () => {
-    const songWithSameProgress: DashboardEntry[] = [
+    const songWithSameProgress: SongEntry[] = [
       {
         id: 4,
         song: "Same Progress Song",
@@ -215,7 +215,7 @@ describe("Songs", () => {
   });
 
   it("handles null progress correctly", () => {
-    const songWithNullProgress: DashboardEntry[] = [
+    const songWithNullProgress: SongEntry[] = [
       {
         id: 5,
         song: "Null Progress Song",

@@ -1,8 +1,8 @@
-import { DashboardEntry } from "@/types/songs";
+import { SongEntry } from "@/types/songs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-const fetchSongs = async (): Promise<{ data: DashboardEntry[] }> => {
+const fetchSongs = async (): Promise<{ data: SongEntry[] }> => {
   console.log("🔄 Fetching songs data...");
   const response = await fetch("/api/songs");
   const result = await response.json();
@@ -28,7 +28,7 @@ const issueInvoice = async (payload: unknown) => {
   return result.data;
 };
 
-const buildPayload = (row: DashboardEntry) => ({
+const buildPayload = (row: SongEntry) => ({
   date: new Date().toISOString().split("T")[0], //  YYYY-MM-DD format
   author: row.author,
   songName: row.song,
@@ -44,7 +44,7 @@ export const useSongs = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: async (row: DashboardEntry) => {
+    mutationFn: async (row: SongEntry) => {
       setMutatingId(row.id);
 
       const payload = buildPayload(row);

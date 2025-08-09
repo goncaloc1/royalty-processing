@@ -25,7 +25,7 @@ export const dbQueries = {
   ),
 
   // Complex queries
-  getDashboard: db.prepare(`
+  getSongList: db.prepare(`
     SELECT
       s.id,
       s.song,

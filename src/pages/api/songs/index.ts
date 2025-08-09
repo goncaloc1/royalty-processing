@@ -15,10 +15,11 @@ export default function handler(
     // Seed database on first run
     seedDatabase();
 
-    const data = dbQueries.getDashboard.all();
+    const data = dbQueries.getSongList.all();
 
     res.status(200).json({ data });
-  } catch {
+  } catch (error) {
+    console.error("Error getting invoice from db:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
