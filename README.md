@@ -1,40 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Royalty Processing
 
-## Getting Started
+A Next.js & TypeScript app powered by TanStack Query for managing song royalties and invoices.
 
-First, run the development server:
+<p align="center">
+  <img src="public/songs-screenshot.png" alt="alt text" width="320" />
+  <img src="public/invoices-screenshot.png" alt="alt text" width="320" />
+</p>
+
+## Running the Application
+
+### Prerequisites
+
+- Node.js v20.x
+
+### Install Dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+# or npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Production Build & Start (recommended due to Next.js prefetch)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm clean:start
+# or npm run clean:start
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Development Mode
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```bash
+pnpm dev:clean
+# or npm run dev:clean
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open http://localhost:3000 in your browser to view the app.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- Display a list of songs with royalty information, plus generate and view invoices.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+- Optimized data fetching, caching, and mutations — **TanStack Query** ⚡ .
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  On first visits, users see a loading skeleton while data loads from the server. Returning visits are lightning-fast thanks to cached data, with background refetching keeping content up to date. After a successful POST request, the song’s “last click” info updates immediately without waiting for the server response (optimistic update approach could also be implemented). Additionally, invoice data is marked as stale after updates, ensuring the next time the invoice page is visited, fresh data is fetched seamlessly in the background.
 
-## Deploy on Vercel
+- Page prefetching for seamless client-side navigation (enabled only in production builds).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Windows focus refetching - automatic background refetch when the app regains focus.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- API routes with automatic database seeding during initialization.
+
+## Design Choices
+
+- **Next.js:** powerful React framework supporting SSR, ISR, and client-only rendering, making it a highly scalable and flexible solution. For this Royalty Processing application, SSR and ISR prototypes were initially explored but overall complexity outweighed the benefits for this context. Instead, a client-only approach was choosen, supercharged by TanStack Query.
+
+  Bonus: Next.js offers API Routes out of the box, so building a simple “songs and invoices” API was a no-brainer.
+
+- **TanStack Query** – a server-state library (as opposed to client-state libraries such as Redux), responsible for managing asynchronous operations between the server and the client. In general, application state can be grouped into two categories:
+
+  - Server Cache – state that is actually stored on the server but cached on the client for quick access.
+  - UI State – state that exists only in the UI to control interactive elements.
+
+  These two types of state have inherently different problems and therefore should be managed differently. For this application, the UI is very simple and the state is almost non-existent - the focus is on server-provided data (the source of truth). This made choosing a server-state library a straightforward decision. Note that TanStack Query and Redux can be used together, or Redux Toolkit Query (RTK) could be adopted as an alternative server-state solution.
+
+- **Tailwind CSS:** widely adopted utility-first CSS framework. It allowed for rapid styling without heavy design overhead, making it ideal for quick iteration in this project.
+
+- **SQLite3:** ultra-lightweight database stored as a local file—perfect for early proof-of-concepts. It requires zero external dependencies, works instantly in local environments and can be migrated to Postgres or MySQL offering nice scalability for a PoC.
+
+  Caveat: Vercel (Next.js frontend cloud) deployments don’t support SQLite because it relies on a persistent local file system to store data. Serverless functions use ephemeral storage, meaning any files written during a function’s execution disappear afterward.
+
+- **Jest + React Testing Library:** proven combination for unit testing in React projects.
+
+## Project Structure In a Nutshell
+
+```
+.
+├── src/
+│   ├── components/       # UI components
+│   ├── hooks/            # React hooks for State Management + Data Querying
+    ├── pages/            # Next.js pages & API routes
+│   │   ├── api/          # REST API handlers (songs, invoices)
+│   │   ├── invoices/     # Invoice page
+│   │   ├── songs/        # Songs page
+│   │   ├── error/        # Generic error page
+│   ├── repository/       # Data layer: DB connection, queries, seed logic
+```
